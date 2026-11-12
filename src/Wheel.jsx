@@ -1,92 +1,86 @@
-const COLORS = [
-  '#ef4444', '#f97316', '#eab308', '#22c55e', '#14b8a6',
-  '#3b82f6', '#6366f1', '#a855f7', '#ec4899', '#84cc16',
-]
+import { colorFor } from './colors.js'
 
-const SIZE = 500
-const C = SIZE / 2
-const R = C - 4
+const C = 250
+const R = 205
 
-// Ángulos en grados, medidos en sentido horario desde arriba (12 en punto).
-function point(angle, radius) {
-  const rad = (angle * Math.PI) / 180
-  return [C + radius * Math.sin(rad), C - radius * Math.cos(rad)]
+// Ángulos en grados, en sentido horario desde arriba (12 en punto).
+const pt = (deg, r) => {
+  const t = ((deg - 90) * Math.PI) / 180
+  return `${(C + r * Math.cos(t)).toFixed(2)} ${(C + r * Math.sin(t)).toFixed(2)}`
 }
 
-function slicePath(start, end) {
-  const [x1, y1] = point(start, R)
-  const [x2, y2] = point(end, R)
-  const largeArc = end - start > 180 ? 1 : 0
-  return `M ${C} ${C} L ${x1} ${y1} A ${R} ${R} 0 ${largeArc} 1 ${x2} ${y2} Z`
-}
+const BULBS = Array.from({ length: 24 }, (_, k) => {
+  const ang = ((k + 0.5) * 15 * Math.PI) / 180
+  return { x: 50 + 44.4 * Math.sin(ang), y: 50 - 44.4 * Math.cos(ang), cls: k % 2 ? 'bulb b' : 'bulb' }
+})
 
-function colorFor(i, n) {
-  // Evita que el primer y el último segmento tengan el mismo color.
-  if (i === n - 1 && n > 1 && n % COLORS.length === 1) return COLORS[1]
-  return COLORS[i % COLORS.length]
-}
-
-export default function Wheel({ items, rotation, spinning, onSpinEnd }) {
+function segments(items) {
   const n = items.length
-  const seg = n > 0 ? 360 / n : 360
-  const fontSize = Math.max(10, Math.min(22, 260 / Math.max(n, 1) + 8))
-  const maxChars = Math.max(6, Math.floor(R / (fontSize * 0.6)) - 2)
+  const a = n ? 360 / n : 360
+  return items.map((e, i) => {
+    const c = colorFor(i, n)
+    const d =
+      n === 1
+        ? `M250 ${C - R} A${R} ${R} 0 1 1 250 ${C + R} A${R} ${R} 0 1 1 250 ${C - R} Z`
+        : `M250 250 L${pt(i * a, R)} A${R} ${R} 0 ${a > 180 ? 1 : 0} 1 ${pt((i + 1) * a, R)} Z`
+    return { key: e.id, d, bg: c.bg }
+  })
+}
+
+export default function Wheel({ items, rotation, spinning, duration, canSpin, onSpin, onSpinEnd, children }) {
+  const n = items.length
 
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[min(90vw,520px)]">
-      {/* Indicador */}
-      <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1">
-        <div className="h-0 w-0 border-x-[16px] border-t-[32px] border-x-transparent border-t-slate-900 drop-shadow-md dark:border-t-white" />
-      </div>
+    <div className={`relative aspect-square w-full max-w-[560px] ${spinning ? 'spinning' : 'idle'}`}>
+      {/* Base y aro dorado */}
+      <div className="absolute inset-0 rounded-full bg-aro shadow-[0_0_0_6px_#FFC23D,0_24px_60px_rgba(255,61,127,0.25)]" />
 
-      <svg
-        viewBox={`0 0 ${SIZE} ${SIZE}`}
-        className="h-full w-full drop-shadow-xl"
+      {/* Gajos (giran). Sin eventos de mouse: al girar, las esquinas del cuadrado taparían el botón de abajo. */}
+      <div
+        className="pointer-events-none absolute inset-0"
         style={{
           transform: `rotate(${rotation}deg)`,
-          transition: spinning ? 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
+          transition: spinning ? `transform ${duration}s cubic-bezier(0.12, 0.8, 0.1, 1)` : 'none',
         }}
-        onTransitionEnd={onSpinEnd}
+        onTransitionEnd={(e) => e.target === e.currentTarget && e.propertyName === 'transform' && onSpinEnd()}
       >
-        {n === 0 && (
-          <>
-            <circle cx={C} cy={C} r={R} className="fill-slate-200 dark:fill-slate-700" />
-            <text x={C} y={C} textAnchor="middle" dominantBaseline="middle" className="fill-slate-500 text-[20px] dark:fill-slate-300">
-              Cargá valores para empezar
-            </text>
-          </>
-        )}
-
-        {n === 1 && <circle cx={C} cy={C} r={R} fill={COLORS[0]} />}
-
-        {n > 1 &&
-          items.map((_, i) => (
-            <path key={i} d={slicePath(i * seg, (i + 1) * seg)} fill={colorFor(i, n)} stroke="white" strokeWidth="2" />
+        {n === 0 && <div className="absolute inset-[9%] rounded-full border-[3px] border-dashed border-borde-input bg-panel" />}
+        <svg viewBox="0 0 500 500" className="absolute inset-0 h-full w-full" aria-hidden="true">
+          {segments(items).map((s) => (
+            <path key={s.key} d={s.d} fill={s.bg} stroke="#140A26" strokeWidth="3" strokeLinejoin="round" />
           ))}
+        </svg>
+      </div>
 
-        {items.map((label, i) => {
-          const mid = i * seg + seg / 2
-          const text = label.length > maxChars ? label.slice(0, maxChars - 1) + '…' : label
-          return (
-            <g key={`t${i}`} transform={`rotate(${mid - 90} ${C} ${C})`}>
-              <text
-                x={C + R - 16}
-                y={C}
-                textAnchor="end"
-                dominantBaseline="middle"
-                fill="white"
-                fontSize={fontSize}
-                fontWeight="700"
-                style={{ paintOrder: 'stroke', stroke: 'rgba(0,0,0,0.25)', strokeWidth: 3 }}
-              >
-                {text}
-              </text>
-            </g>
-          )
-        })}
+      {/* Lamparitas */}
+      {BULBS.map((b, i) => (
+        <div
+          key={i}
+          className={`${b.cls} absolute h-[2.6%] w-[2.6%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FFF6D6]`}
+          style={{ left: `${b.x}%`, top: `${b.y}%` }}
+        />
+      ))}
 
-        <circle cx={C} cy={C} r={28} fill="white" stroke="#0f172a" strokeWidth="4" />
+      {/* Aro interno y puntero */}
+      <svg viewBox="0 0 500 500" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
+        <circle cx="250" cy="250" r="207" fill="none" stroke="#FFC23D" strokeWidth="4" />
+        <path d="M228 4 L272 4 L250 70 Z" fill="#FF3D7F" stroke="#FFF4E3" strokeWidth="5" strokeLinejoin="round" />
+        <circle cx="250" cy="20" r="6" fill="#FFF4E3" />
       </svg>
+
+      {/* Botón del centro */}
+      <button
+        type="button"
+        onClick={onSpin}
+        disabled={!canSpin}
+        aria-label="Girar la ruleta"
+        className="hub absolute left-1/2 top-1/2 flex h-[26%] w-[26%] -translate-x-1/2 -translate-y-1/2 items-end justify-center overflow-hidden rounded-full border-[7px] border-noche bg-noche p-0 font-display text-[15px] text-white shadow-[0_0_0_4px_#FFC23D,0_6px_0_4px_#A86F0A]"
+      >
+        <span className="w-full bg-[rgba(20,10,38,0.78)] pb-[9px] pt-[5px] tracking-[0.06em]">GIRAR</span>
+      </button>
+
+      {/* Cartel del ganador (va adentro de la rueda) */}
+      {children}
     </div>
   )
 }

@@ -1,16 +1,89 @@
-# React + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+# 🎡 Ruleta
 
-Currently, two official plugins are available:
+**Acá no hay VAR, maestro.**
+Metés los nombres, le das masa y lo que sale, sale. Ideal para sortear quién paga, quién lava los platos o a quién le toca.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 
-## React Compiler
+<img src="docs/captura.png" alt="Captura de la ruleta" width="760" />
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+</div>
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## ✨ Funcionalidades
+
+- 🎡 **Pinta de feria de noche.** Aro con 24 lamparitas que titilan (más rápido mientras gira), brillos de fondo y destellos.
+- 🎯 **Giro con suspenso.** Frena suave hasta caer en un gajo. Se gira con el botón del centro de la rueda o con el botón rosa grande. Hacen falta al menos dos anotados.
+- 📝 **Anotar gente.** De a uno en "Sumá una víctima" (con Enter o "¡Adentro!"), o varios juntos en "Carga al por mayor", uno por renglón o separados por comas.
+- 🔀 **Acomodar la lista.** "Mezclar" cambia el orden, la ✕ saca a uno y "Barajar y dar de nuevo" vacía todo.
+- 🏆 **Cartel del ganador.** Aparece sobre la rueda. Elegís "Que siga la joda" o "Afuera, ya fue". Con el **modo eliminación** activado, el que sale se va a las duchas igual.
+- 🕘 **Los que ya ligaron.** Historial con los últimos 10 resultados.
+- 🎨 **Tweaks.** Color principal (dorado, turquesa, celeste o naranja) y duración del giro (de 2 a 10 segundos).
+- 💾 **Guardado por sesión.** La lista y el historial siguen ahí aunque recargues la página. Se borran al cerrar la pestaña.
+- ♿ **Accesible.** Se puede usar con teclado, con foco visible, y respeta la opción del sistema de reducir movimiento.
+- 📱 **Responsive.** Funciona en el celular y en la compu.
+
+### 📸 Foto del botón central
+
+El botón del centro de la rueda usa de fondo la imagen `public/boton-centro.png`. Para cambiarla, reemplazá ese archivo por otro con el mismo nombre. Queda mejor una foto vertical o cuadrada con la cara centrada un poco arriba.
+
+## 🚀 Cómo usarla
+
+Necesitás tener instalado [Node.js](https://nodejs.org/) 20 o superior.
+
+```bash
+# 1. Clonar el repo
+git clone https://github.com/Santipaul38/RulaApp.git
+cd RulaApp
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Levantar el servidor de desarrollo
+npm run dev
+```
+
+Después abrí la dirección que aparece en la terminal (por defecto, `http://localhost:5173`).
+
+Para usar otro puerto:
+
+```bash
+npm run dev -- --port 8008
+```
+
+## 📜 Scripts
+
+| Comando           | Qué hace                                        |
+| ----------------- | ----------------------------------------------- |
+| `npm run dev`     | Levanta el servidor de desarrollo con recarga en vivo |
+| `npm run build`   | Genera la versión de producción en `dist/`      |
+| `npm run preview` | Sirve localmente la versión ya compilada        |
+| `npm run lint`    | Revisa el código con Oxlint                     |
+
+## 🗂️ Estructura
+
+```
+src/
+├── App.jsx              # Página principal: panel, giro, historial, cartel del ganador y Tweaks
+├── Wheel.jsx            # Rueda en SVG: gajos, aro con lamparitas, puntero y botón central
+├── Background.jsx       # Fondo animado: manchas de luz, degradé y destellos
+├── useSessionState.js   # Hook que guarda el estado en sessionStorage
+├── main.jsx             # Punto de entrada de React
+└── index.css            # Tailwind, paleta de colores, tipografías y animaciones
+```
+
+## 🛠️ ¿Cómo funciona?
+
+- **El giro.** Al tocar *¡Girar!* se elige un ganador al azar y se calcula cuánto tiene que rotar la ruleta (varias vueltas completas más lo justo) para que ese valor quede bajo la flecha. La animación es una transición de CSS.
+- **El guardado.** El hook `useSessionState` funciona como `useState`, pero además guarda el valor en `sessionStorage`. Si preferís que los datos queden guardados aunque cierres el navegador, cambiá `sessionStorage` por `localStorage` en [`src/useSessionState.js`](src/useSessionState.js).
+
+---
+
+<div align="center">
+Lo que sale, sale. Los reclamos, a Lord Chiqui Tapia. 🧉
+</div>
