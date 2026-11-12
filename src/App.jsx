@@ -5,7 +5,6 @@ import { colorFor } from './colors.js'
 import { useSessionState } from './useSessionState.js'
 
 const newId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
-const INITIAL_ITEMS = ['Pipo', 'Tunel', 'Quique', 'Broster'].map((label, i) => ({ id: `ini-${i}`, label }))
 const HISTORY_SIZE = 10
 
 const SPIN_TEXTS = ['ARRANCÓ EL BAILE…', 'NI PESTAÑEES…', 'AGARRATE CATALINA…', 'MÁS VUELTAS QUE UN TRÁMITE…', 'SE PICÓ, CHE…']
@@ -34,7 +33,7 @@ const ghostClass =
   'ghost inline-flex min-h-11 items-center gap-1.5 border-none bg-transparent px-2.5 text-sm font-medium text-lila'
 
 export default function App() {
-  const [items, setItems] = useSessionState('ruleta:v3:items', INITIAL_ITEMS)
+  const [items, setItems] = useSessionState('ruleta:v3:items', [])
   const [history, setHistory] = useSessionState('ruleta:v3:history', [])
   const [removeWinner, setRemoveWinner] = useSessionState('ruleta:v3:eliminate', false)
   const [accent, setAccent] = useSessionState('ruleta:v3:accent', ACCENTS[0].value)
@@ -135,7 +134,7 @@ export default function App() {
   return (
     <div
       className="relative box-border min-h-screen overflow-hidden bg-noche px-5 pb-16 pt-10 font-sans text-crema"
-      style={{ '--accent': accent }}
+      style={{ '--color-accent': accent }}
     >
       <Background />
 
@@ -152,7 +151,7 @@ export default function App() {
             </p>
           </div>
           <div className="flex items-center gap-2.5 rounded-full border-2 border-borde bg-panel px-[18px] py-2.5">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFC23D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="stroke-accent" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="9" cy="8" r="4" />
               <path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7" />
               <path d="M16 4a4 4 0 0 1 0 8" />
@@ -179,7 +178,7 @@ export default function App() {
                   <div
                     role="dialog"
                     aria-label="Resultado"
-                    className="pop box-border flex w-[78%] flex-col items-center gap-3.5 rounded-[28px] border-4 border-dorado bg-crema px-6 py-7 text-center text-tinta shadow-[0_10px_0_#FF3D7F]"
+                    className="pop box-border flex w-[78%] flex-col items-center gap-3.5 rounded-[28px] border-4 border-accent bg-crema px-6 py-7 text-center text-tinta shadow-[0_10px_0_#FF3D7F]"
                   >
                     <span className="text-[13px] font-bold tracking-[0.22em] text-rosa-texto">{winner.head}</span>
                     <div className="flex max-w-full items-center gap-3">
@@ -288,7 +287,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={addBulk}
-                className="min-h-12 rounded-[14px] border-2 border-dorado bg-transparent text-base font-bold text-dorado"
+                className="min-h-12 rounded-[14px] border-2 border-accent bg-transparent text-base font-bold text-accent"
               >
                 Mandalos a todos al ruedo
               </button>
@@ -398,7 +397,7 @@ export default function App() {
               value={duration}
               disabled={spinning}
               onChange={(e) => setDuration(Number(e.target.value))}
-              className="w-full accent-(--accent)"
+              className="w-full accent-accent"
             />
           </div>
         )}
