@@ -9,6 +9,8 @@ Metés los nombres, le das masa y lo que sale, sale. Ideal para sortear quién p
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 
+### 👉 [Probala acá: rulapp.vercel.app](https://rulapp.vercel.app/)
+
 <img src="docs/captura.png" alt="Captura de la ruleta" width="760" />
 
 </div>
