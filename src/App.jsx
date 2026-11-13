@@ -2,7 +2,7 @@ import { useState } from "react";
 import Background from "./Background.jsx";
 import Wheel from "./Wheel.jsx";
 import { colorFor } from "./colors.js";
-import { useSessionState } from "./useSessionState.js";
+import { usePersistentState } from "./usePersistentState.js";
 
 const newId = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -46,17 +46,17 @@ const ghostClass =
   "ghost inline-flex min-h-11 items-center gap-1.5 border-none bg-transparent px-2.5 text-sm font-medium text-lila";
 
 export default function App() {
-  const [items, setItems] = useSessionState("ruleta:v3:items", []);
-  const [history, setHistory] = useSessionState("ruleta:v3:history", []);
-  const [removeWinner, setRemoveWinner] = useSessionState(
+  const [items, setItems] = usePersistentState("ruleta:v3:items", []);
+  const [history, setHistory] = usePersistentState("ruleta:v3:history", []);
+  const [removeWinner, setRemoveWinner] = usePersistentState(
     "ruleta:v3:eliminate",
     false,
   );
-  const [accent, setAccent] = useSessionState(
+  const [accent, setAccent] = usePersistentState(
     "ruleta:v3:accent",
     ACCENTS[0].value,
   );
-  const [duration, setDuration] = useSessionState("ruleta:v3:duration", 5);
+  const [duration, setDuration] = usePersistentState("ruleta:v3:duration", 5);
 
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);

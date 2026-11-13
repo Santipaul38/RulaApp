@@ -24,7 +24,7 @@ Metés los nombres, le das masa y lo que sale, sale. Ideal para sortear quién p
 - 🏆 **Cartel del ganador.** Aparece sobre la rueda. Elegís "Que siga la joda" o "Afuera, ya fue". Con el **modo eliminación** activado, el que sale se va a las duchas igual.
 - 🕘 **Los que ya ligaron.** Historial con los últimos 10 resultados.
 - 🎨 **Tweaks.** Color principal (dorado, turquesa, celeste o naranja) y duración del giro (de 2 a 10 segundos).
-- 💾 **Guardado por sesión.** La lista y el historial siguen ahí aunque recargues la página. Se borran al cerrar la pestaña.
+- 💾 **Se guarda sola.** La lista, el historial y los ajustes quedan guardados en tu navegador, aunque recargues, cierres la pestaña o apagues la compu.
 - ♿ **Accesible.** Se puede usar con teclado, con foco visible, y respeta la opción del sistema de reducir movimiento.
 - 📱 **Responsive.** Funciona en el celular y en la compu.
 
@@ -82,7 +82,7 @@ src/
 ├── App.jsx              # Página principal: panel, giro, historial, cartel del ganador y Tweaks
 ├── Wheel.jsx            # Rueda en SVG: gajos, aro con lamparitas, puntero y botón central
 ├── Background.jsx       # Fondo animado: manchas de luz, degradé y destellos
-├── useSessionState.js   # Hook que guarda el estado en sessionStorage
+├── usePersistentState.js # Hook que guarda el estado en localStorage
 ├── main.jsx             # Punto de entrada de React
 └── index.css            # Tailwind, paleta de colores, tipografías y animaciones
 ```
@@ -90,7 +90,7 @@ src/
 ## 🛠️ ¿Cómo funciona?
 
 - **El giro.** Al tocar *¡Girar!* se elige un ganador al azar y se calcula cuánto tiene que rotar la ruleta (varias vueltas completas más lo justo) para que ese valor quede bajo la flecha. La animación es una transición de CSS.
-- **El guardado.** El hook `useSessionState` funciona como `useState`, pero además guarda el valor en `sessionStorage`. Si preferís que los datos queden guardados aunque cierres el navegador, cambiá `sessionStorage` por `localStorage` en [`src/useSessionState.js`](src/useSessionState.js).
+- **El guardado.** El hook `usePersistentState` funciona como `useState`, pero además guarda el valor en `localStorage`. Los datos quedan en ese navegador hasta que se borren los datos del sitio, y no se comparten entre dispositivos.
 
 ---
 
