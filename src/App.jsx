@@ -181,7 +181,8 @@ export default function App() {
               ACÁ NO HAY VAR, MAESTRO
             </span>
             <h1 className="m-0 font-display text-[clamp(48px,9vw,68px)] font-normal leading-none text-accent [text-shadow:5px_5px_0_#FF3D7F]">
-              RULETA<span className="sr-only"> de nombres online para sortear</span>
+              RULETA
+              <span className="sr-only"> de nombres online para sortear</span>
             </h1>
             <p className="m-0 text-[17px] text-lila">
               Metés los nombres, le das masa y lo que sale, sale. ¿No te gustó?
@@ -523,12 +524,8 @@ export default function App() {
         </div>
 
         {/* Firma */}
-        <footer className="border-t-2 border-borde pt-6 text-center text-sm text-lila">
-          Hecho con{" "}
-          <span role="img" aria-label="mate">
-            🧉
-          </span>{" "}
-          por{" "}
+        <footer className="flex items-center justify-center gap-1.5 border-t-2 border-borde pt-6 text-center text-sm text-lila">
+          Hecho por:{" "}
           <a
             href="https://github.com/Santipaul38"
             target="_blank"
@@ -537,6 +534,17 @@ export default function App() {
           >
             Santiago
           </a>
+          {/* Bandera argentina en SVG: el emoji 🇦🇷 no se ve en Windows */}
+          <svg
+            viewBox="0 0 30 20"
+            className="h-[14px] w-[21px] flex-none rounded-[3px] shadow-[0_0_0_1px_rgba(255,244,227,0.25)]"
+            role="img"
+            aria-label="Argentina"
+          >
+            <rect width="30" height="20" fill="#74ACDF" />
+            <rect y="6.67" width="30" height="6.67" fill="#FFFFFF" />
+            <circle cx="15" cy="10" r="2.1" fill="#F6B40E" stroke="#85340A" strokeWidth="0.35" />
+          </svg>
         </footer>
       </div>
 
