@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Background from "./Background.jsx";
 import Wheel from "./Wheel.jsx";
 import { colorFor } from "./colors.js";
+import { copyList, exportJSON, exportTXT } from "./exportData.js";
 import { usePersistentState } from "./usePersistentState.js";
 
 const newId = () =>
@@ -66,6 +67,8 @@ export default function App() {
   const [draft, setDraft] = useState("");
   const [bulk, setBulk] = useState("");
   const [tweaksOpen, setTweaksOpen] = useState(false);
+  const [copyState, setCopyState] = useState("idle"); // idle | ok | error
+  const copyTimer = useRef(null);
 
   const n = items.length;
   const noSpin = spinning || n < 2;
@@ -107,6 +110,15 @@ export default function App() {
     setHistory([]);
     setWinner(null);
   };
+
+  const copy = async () => {
+    const ok = await copyList(items);
+    setCopyState(ok ? "ok" : "error");
+    clearTimeout(copyTimer.current);
+    copyTimer.current = setTimeout(() => setCopyState("idle"), 2000);
+  };
+
+  useEffect(() => () => clearTimeout(copyTimer.current), []);
 
   const removeById = (id) =>
     setItems((list) => list.filter((x) => x.id !== id));
@@ -182,7 +194,7 @@ export default function App() {
             </span>
             <h1 className="m-0 font-display text-[clamp(48px,9vw,68px)] font-normal leading-none text-accent [text-shadow:5px_5px_0_#FF3D7F]">
               RULETA
-              <span className="sr-only"> de nombres online para sortear</span>
+              <span className="sr-only"> de nombres para sorteos online</span>
             </h1>
             <p className="m-0 text-[17px] text-lila">
               Metés los nombres, le das masa y lo que sale, sale. ¿No te gustó?
@@ -520,6 +532,62 @@ export default function App() {
                 duchas y no vuelve a jugar
               </span>
             </label>
+
+            {/* Exportar datos */}
+            <div className="flex flex-col gap-2.5">
+              <span className="text-sm font-bold">
+                Llevate los datos{" "}
+                <span className="font-normal text-lila">
+                  · por si las moscas
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={copy}
+                disabled={n === 0}
+                title="Un nombre por renglón, para pegar en WhatsApp o donde quieras"
+                className="min-h-11 rounded-[14px] border-2 border-borde bg-input text-sm font-bold text-crema disabled:opacity-50"
+              >
+                {copyState === "ok"
+                  ? "¡Copiado, papá!"
+                  : copyState === "error"
+                    ? "No se pudo copiar"
+                    : "Copiar lista"}
+              </button>
+              <div className="flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={() =>
+                    exportJSON({
+                      items,
+                      history,
+                      settings: { removeWinner, accent, duration },
+                    })
+                  }
+                  disabled={n === 0 && history.length === 0}
+                  title="Nombres, historial y configuración"
+                  className="min-h-11 flex-1 rounded-[14px] border-2 border-borde bg-input text-sm font-bold text-crema disabled:opacity-50"
+                >
+                  Todo (.json)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => exportTXT(items)}
+                  disabled={n === 0}
+                  title="Un nombre por renglón, listo para volver a pegar"
+                  className="min-h-11 flex-1 rounded-[14px] border-2 border-borde bg-input text-sm font-bold text-crema disabled:opacity-50"
+                >
+                  Lista (.txt)
+                </button>
+              </div>
+              <span className="sr-only" aria-live="polite">
+                {copyState === "ok"
+                  ? "Lista copiada al portapapeles"
+                  : copyState === "error"
+                    ? "No se pudo copiar la lista"
+                    : ""}
+              </span>
+            </div>
           </aside>
         </div>
 
