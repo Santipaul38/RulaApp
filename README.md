@@ -56,6 +56,16 @@ Para usar otro puerto:
 npm run dev -- --port 8008
 ```
 
+## 🌐 Publicarla
+
+Antes de compilar para publicar, poné la URL definitiva en el archivo `.env`, sin barra al final:
+
+```bash
+VITE_SITE_URL=https://tu-ruleta.vercel.app
+```
+
+Con esa URL, `npm run build` completa la vista previa para compartir (WhatsApp, redes), los datos para Google y genera `robots.txt` y `sitemap.xml` en `dist/`.
+
 ## 📜 Scripts
 
 | Comando           | Qué hace                                        |

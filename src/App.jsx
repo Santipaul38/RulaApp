@@ -104,6 +104,7 @@ export default function App() {
   const clearAll = () => {
     if (spinning) return;
     setItems([]);
+    setHistory([]);
     setWinner(null);
   };
 
@@ -137,11 +138,16 @@ export default function App() {
     setSpinning(false);
     if (pending) {
       setWinner(pending);
+      // El más reciente va primero; `n` es el número de giro (#1, #2…).
       setHistory((h) =>
-        [{ label: pending.label, color: pending.color }, ...h].slice(
-          0,
-          HISTORY_SIZE,
-        ),
+        [
+          {
+            n: (h[0]?.n ?? h.length) + 1,
+            label: pending.label,
+            color: pending.color,
+          },
+          ...h,
+        ].slice(0, HISTORY_SIZE),
       );
       setPending(null);
     }
@@ -175,7 +181,7 @@ export default function App() {
               ACÁ NO HAY VAR, MAESTRO
             </span>
             <h1 className="m-0 font-display text-[clamp(48px,9vw,68px)] font-normal leading-none text-accent [text-shadow:5px_5px_0_#FF3D7F]">
-              RULETA
+              RULETA<span className="sr-only"> de nombres online para sortear</span>
             </h1>
             <p className="m-0 text-[17px] text-lila">
               Metés los nombres, le das masa y lo que sale, sale. ¿No te gustó?
@@ -286,25 +292,49 @@ export default function App() {
                   Limpiar
                 </button>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {history.length === 0 && (
-                  <span className="text-[15px] text-apagado">
-                    Acá todavía no ligó nadie. Dale, girá que se enfría el mate.
-                  </span>
-                )}
-                {history.map((h, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-2 rounded-full border-2 border-borde bg-panel py-[7px] pl-2.5 pr-3.5 text-[15px] font-medium"
-                  >
-                    <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{ background: h.color }}
-                    />
-                    {h.label}
-                  </span>
-                ))}
-              </div>
+              {history.length === 0 ? (
+                <span className="text-[15px] text-apagado">
+                  Acá todavía no ligó nadie. Dale, girá que se enfría el mate.
+                </span>
+              ) : (
+                <ol
+                  className="flex flex-wrap gap-2"
+                  aria-label="Resultados, del más reciente al más viejo"
+                >
+                  {history.map((h, i) => {
+                    const num = h.n ?? history.length - i;
+                    const latest = i === 0;
+                    return (
+                      <li
+                        key={num}
+                        className={`inline-flex items-center gap-2 rounded-full border-2 bg-panel py-[7px] pl-2.5 pr-3.5 text-[15px] font-medium ${
+                          latest ? "border-accent" : "border-borde opacity-80"
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-apagado">
+                          #{num}
+                        </span>
+                        <span
+                          className="h-2.5 w-2.5 flex-none rounded-full"
+                          style={{ background: h.color }}
+                        />
+                        {h.label}
+                        {latest && (
+                          <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-noche">
+                            último
+                          </span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+              {history.length > 1 && (
+                <span className="-mt-1 text-xs text-apagado">
+                  Del más reciente al más viejo · se guardan los últimos{" "}
+                  {HISTORY_SIZE}
+                </span>
+              )}
               <p className="mt-1 rounded-[14px] border-2 border-dashed border-rosa bg-rosa/12 px-4 py-3 text-sm leading-[1.45] text-[#FFD3E2]">
                 <strong className="text-white">
                   Departamento de reclamos:

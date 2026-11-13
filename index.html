@@ -1,15 +1,17 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-AR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ruleta · Acá no hay VAR, maestro</title>
+    <title>Ruleta de nombres online para sortear · Acá no hay VAR, maestro</title>
     <meta
       name="description"
-      content="Metés los nombres, le das masa y lo que sale, sale. La ruleta para sortear quién paga, quién lava los platos o a quién le toca. ¿No te gustó? Andá a llorarle a Lord Chiqui Tapia."
+      content="Ruleta de nombres online y gratis para sortear quién paga, quién lava los platos o a quién le toca. Cargá los nombres, girá y lo que sale, sale. Sin registrarte y desde el celular."
     />
     <meta name="theme-color" content="#140A26" />
     <meta name="color-scheme" content="dark" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="keywords" content="ruleta de nombres, ruleta online, ruleta aleatoria, sorteo online, sortear nombres, girar ruleta, ruleta para sortear" />
     <link rel="canonical" href="%VITE_SITE_URL%/" />
 
     <!-- Íconos -->
@@ -43,6 +45,24 @@
     <meta name="twitter:image" content="%VITE_SITE_URL%/favicon.png" />
     <meta name="twitter:image:alt" content="Ruleta de colores con un puntero rosa arriba" />
 
+    <!-- Datos estructurados para Google -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Ruleta",
+        "alternateName": "Ruleta de nombres · Acá no hay VAR, maestro",
+        "url": "%VITE_SITE_URL%/",
+        "image": "%VITE_SITE_URL%/favicon.png",
+        "description": "Ruleta de nombres online y gratis para sortear quién paga, quién lava los platos o a quién le toca.",
+        "applicationCategory": "EntertainmentApplication",
+        "operatingSystem": "Cualquiera (funciona en el navegador)",
+        "inLanguage": "es-AR",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ARS" }
+      }
+    </script>
+
     <!-- Tipografías -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,7 +72,23 @@
     />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Contenido inicial para buscadores y para quien no tiene JavaScript. React lo reemplaza al cargar. -->
+    <div id="root">
+      <main style="max-width: 720px; margin: 0 auto; padding: 40px 20px; color: #fff4e3; font-family: Rubik, system-ui, sans-serif">
+        <h1>Ruleta de nombres online para sortear</h1>
+        <p>
+          Metés los nombres, le das masa y lo que sale, sale. Una ruleta aleatoria y gratis para sortear quién paga el
+          asado, quién lava los platos o a quién le toca. ¿No te gustó? Andá a llorarle a Lord Chiqui Tapia.
+        </p>
+        <h2>Cómo se usa</h2>
+        <ol>
+          <li>Anotá a la gente de a uno o pegá varios nombres juntos, uno por renglón o separados por comas.</li>
+          <li>Girá la ruleta con el botón del centro o con el botón grande.</li>
+          <li>Mirá quién salió. Con el modo eliminación, el ganador sale de la ruleta y no vuelve a jugar.</li>
+        </ol>
+        <noscript><p>Para girar la ruleta necesitás activar JavaScript en tu navegador.</p></noscript>
+      </main>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
