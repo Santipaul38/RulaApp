@@ -521,6 +521,23 @@ export default function App() {
             </label>
           </aside>
         </div>
+
+        {/* Firma */}
+        <footer className="border-t-2 border-borde pt-6 text-center text-sm text-lila">
+          Hecho con{" "}
+          <span role="img" aria-label="mate">
+            🧉
+          </span>{" "}
+          por{" "}
+          <a
+            href="https://github.com/Santipaul38"
+            target="_blank"
+            rel="noopener noreferrer author"
+            className="font-bold text-accent underline decoration-2 underline-offset-4 hover:brightness-110"
+          >
+            Santiago
+          </a>
+        </footer>
       </div>
 
       {/* Tweaks: color principal y duración del giro */}
