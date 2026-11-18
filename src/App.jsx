@@ -3,6 +3,11 @@ import Background from "./Background.jsx";
 import Wheel from "./Wheel.jsx";
 import { colorFor } from "./colors.js";
 import { copyList, exportJSON, exportTXT } from "./exportData.js";
+import {
+  fetchLetterboxdList,
+  filmLabel,
+  parseLetterboxdCsv,
+} from "./letterboxd.js";
 import { usePersistentState } from "./usePersistentState.js";
 
 const newId = () =>
@@ -66,6 +71,9 @@ export default function App() {
   const [winner, setWinner] = useState(null); // { id, label, color, head, sub }
   const [draft, setDraft] = useState("");
   const [bulk, setBulk] = useState("");
+  const [lbUrl, setLbUrl] = useState("");
+  const [lbYear, setLbYear] = usePersistentState("ruleta:v3:lbYear", false);
+  const [lbStatus, setLbStatus] = useState({ kind: "idle", msg: "" }); // idle | loading | ok | error
   const [tweaksOpen, setTweaksOpen] = useState(false);
   const [copyState, setCopyState] = useState("idle"); // idle | ok | error
   const copyTimer = useRef(null);
@@ -90,6 +98,45 @@ export default function App() {
   const addBulk = () => {
     addLabels(bulk.split(/[\n,]+/));
     setBulk("");
+  };
+
+  // Los títulos van directo a addLabels (no por la carga masiva) porque
+  // muchos tienen comas.
+  const addFilms = (films, from) => {
+    addLabels(films.map((f) => filmLabel(f, lbYear)));
+    setLbStatus({
+      kind: "ok",
+      msg: `${films.length} ${films.length === 1 ? "peli" : "pelis"} de ${from}.`,
+    });
+  };
+
+  const importLetterboxd = async () => {
+    const url = lbUrl.trim();
+    if (!url || lbStatus.kind === "loading") return;
+    setLbStatus({ kind: "loading", msg: "Trayendo la lista…" });
+    try {
+      const { name, films, truncated } = await fetchLetterboxdList(url);
+      addFilms(films, `"${name || "la lista"}"`);
+      if (truncated)
+        setLbStatus((s) => ({
+          ...s,
+          msg: `${s.msg} Es enorme, así que traje solo las primeras.`,
+        }));
+      setLbUrl("");
+    } catch (err) {
+      setLbStatus({ kind: "error", msg: err.message });
+    }
+  };
+
+  const importLetterboxdCsv = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      addFilms(parseLetterboxdCsv(await file.text()), file.name);
+    } catch (err) {
+      setLbStatus({ kind: "error", msg: err.message });
+    }
   };
 
   const shuffle = () => {
@@ -409,6 +456,62 @@ export default function App() {
               >
                 Mandalos a todos
               </button>
+            </div>
+
+            <div className="flex flex-col gap-2.5">
+              <label htmlFor="letterboxd" className="text-sm font-bold">
+                Desde Letterboxd{" "}
+                <span className="font-normal text-lila">
+                  · pegá el link de una lista o watchlist
+                </span>
+              </label>
+              <div className="flex gap-2.5">
+                <input
+                  id="letterboxd"
+                  type="url"
+                  inputMode="url"
+                  value={lbUrl}
+                  onChange={(e) => setLbUrl(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && importLetterboxd()}
+                  placeholder="letterboxd.com/usuario/list/…"
+                  className={`${fieldClass} min-h-12 min-w-0 flex-auto`}
+                />
+                <button
+                  type="button"
+                  onClick={importLetterboxd}
+                  disabled={!lbUrl.trim() || lbStatus.kind === "loading"}
+                  className="min-h-12 flex-none rounded-[14px] border-none bg-accent px-5 text-base font-bold text-[#2A1145] disabled:opacity-50"
+                >
+                  {lbStatus.kind === "loading" ? "Trayendo…" : "Traer"}
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-lila">
+                  <input
+                    type="checkbox"
+                    checked={lbYear}
+                    onChange={() => setLbYear((v) => !v)}
+                    className="h-4 w-4 flex-none accent-rosa"
+                  />
+                  Con el año
+                </label>
+                <label className={`${ghostClass} cursor-pointer`}>
+                  o subí el CSV exportado
+                  <input
+                    type="file"
+                    accept=".csv,text/csv"
+                    onChange={importLetterboxdCsv}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+              <p
+                role="status"
+                aria-live="polite"
+                className={`m-0 text-sm ${lbStatus.kind === "error" ? "text-rosa" : "text-lila"} ${lbStatus.msg ? "" : "sr-only"}`}
+              >
+                {lbStatus.msg}
+              </p>
             </div>
 
             <div className="h-0.5 bg-borde" />

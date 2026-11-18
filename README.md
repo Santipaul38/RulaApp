@@ -22,6 +22,7 @@ Metés los nombres, le das masa y lo que sale, sale. Ideal para sortear quién p
 - 🎡 **Pinta de feria de noche.** Aro con 24 lamparitas que titilan (más rápido mientras gira), brillos de fondo y destellos.
 - 🎯 **Giro con suspenso.** Frena suave hasta caer en un gajo. Se gira con el botón del centro de la rueda o con el botón rosa grande. Hacen falta al menos dos anotados.
 - 📝 **Anotar gente.** De a uno en "Sumá una víctima" (con Enter o "¡Adentro!"), o varios juntos en "Carga al por mayor", uno por renglón o separados por comas.
+- 🎬 **Desde Letterboxd.** Pegás el link de una lista o watchlist pública y entran todas las pelis (con o sin el año). Si el link no anda, podés subir el CSV que exporta Letterboxd.
 - 🔀 **Acomodar la lista.** "Mezclar" cambia el orden, la ✕ saca a uno y "Barajar y dar de nuevo" vacía todo.
 - 🏆 **Cartel del ganador.** Aparece sobre la rueda. Elegís "Que siga la joda" o "Afuera, ya fue". Con el **modo eliminación** activado, el que sale se va a las duchas igual.
 - 🕘 **Los que ya ligaron.** Historial con los últimos 10 resultados.

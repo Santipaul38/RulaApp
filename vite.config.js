@@ -32,10 +32,37 @@ function seoFiles(siteUrl) {
   }
 }
 
+// En `npm run dev` sirve las funciones de /api (en producción las corre Vercel).
+// Solo GET y solo handlers estilo Web (`export function GET(request)`).
+function devApi() {
+  return {
+    name: 'dev-api',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/api', async (req, res, next) => {
+        const name = req.url.split('?')[0].replace(/^\/+|\/+$/g, '')
+        if (req.method !== 'GET' || !/^[a-z0-9-]+$/i.test(name)) return next()
+        try {
+          const mod = await server.ssrLoadModule(`/api/${name}.js`)
+          if (!mod.GET) return next()
+          const response = await mod.GET(
+            new Request(`http://${req.headers.host}/api${req.url}`),
+          )
+          res.statusCode = response.status
+          response.headers.forEach((value, key) => res.setHeader(key, value))
+          res.end(Buffer.from(await response.arrayBuffer()))
+        } catch (err) {
+          next(err)
+        }
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_')
   return {
-    plugins: [react(), tailwindcss(), seoFiles(env.VITE_SITE_URL)],
+    plugins: [react(), tailwindcss(), devApi(), seoFiles(env.VITE_SITE_URL)],
   }
 })
