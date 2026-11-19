@@ -244,7 +244,7 @@ export default function App() {
               <span className="sr-only"> de nombres para sorteos online</span>
             </h1>
             <p className="m-0 text-[17px] text-lila">
-              Metés los nombres, le das masa y lo que sale, sale. ¿No te gustó?
+              Metés los nombres, la haces girar y lo que sale, sale. ¿No te gustó?
               Andá a llorarle a Lord Chiqui Tapia.
             </p>
           </div>

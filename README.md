@@ -3,7 +3,7 @@
 # 🎡 Ruleta
 
 **Acá no hay VAR, maestro.**
-Metés los nombres, le das masa y lo que sale, sale. Ideal para sortear quién paga, quién lava los platos o a quién le toca.
+Metés los nombres, la haces girar y lo que sale, sale. Ideal para sortear quién paga, quién lava los platos o a quién le toca.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
